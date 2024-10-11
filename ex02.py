@@ -13,12 +13,36 @@ G.add_edges_from([('Station A', 'Station B'),
                   ('Station A', 'Station C'),
                   ('Station B', 'Station D')])
 
-dfs_path = list(nx.dfs_edges(G, source='Station A'))  # Пошук у глибину
-bfs_path = list(nx.bfs_edges(G, source='Station A'))  # Пошук у ширину
+def dfs(graph, start):
+    visited = set()
+    stack = [start]
+    path = []
 
-# Результати у вигляді послідовності станцій
-dfs_sequence = ['Station A'] + [v for u, v in dfs_path]
-bfs_sequence = ['Station A'] + [v for u, v in bfs_path]
+    while stack:
+        node = stack.pop()
+        if node not in visited:
+            visited.add(node)
+            path.append(node)
+            stack.extend(reversed([neighbor for neighbor in graph.neighbors(node) if neighbor not in visited]))
+    
+    return path
+
+def bfs(graph, start):
+    visited = set()
+    queue = [start]
+    path = []
+
+    while queue:
+        node = queue.pop(0)
+        if node not in visited:
+            visited.add(node)
+            path.append(node)
+            queue.extend([neighbor for neighbor in graph.neighbors(node) if neighbor not in visited])
+    
+    return path
+
+dfs_sequence = dfs(G, 'Station A')
+bfs_sequence = bfs(G, 'Station A')
 
 print(f"Шлях DFS: {' -> '.join(dfs_sequence)}")
 print(f"Шлях BFS: {' -> '.join(bfs_sequence)}")
